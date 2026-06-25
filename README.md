@@ -19,20 +19,55 @@ Instead of blindly running `ncu -u`, the skill instructs the agent to:
 
 ## Install
 
-Copy the skill into your user-level skills directory as `npm-check-updates/`:
+### With `npx skills` (recommended — the [skills.sh](https://www.skills.sh/) app)
+
+One command, no clone, works across Claude Code, Cursor, Copilot, Cline, Windsurf, and 20+ agents:
 
 ```sh
-# macOS / Linux
-mkdir -p ~/.claude/skills/npm-check-updates
-cp SKILL.md ~/.claude/skills/npm-check-updates/
+# Global — available in every project (~/.claude/skills/)
+npx skills add MrErikCodes/npm-check-updates-skill -g
 
-# Windows (PowerShell)
-New-Item -ItemType Directory -Force "$HOME\.claude\skills\npm-check-updates"
-Copy-Item SKILL.md "$HOME\.claude\skills\npm-check-updates\"
+# Project-scoped — just this repo (./.claude/skills/)
+npx skills add MrErikCodes/npm-check-updates-skill
 ```
 
-The agent auto-discovers it from the `description` frontmatter and loads it when you ask to
-update / upgrade / bump dependencies or mention `npm-check-updates` / `ncu`.
+Manage it later:
+
+```sh
+npx skills list                       # show installed skills
+npx skills remove npm-check-updates   # uninstall
+```
+
+### From git (clone & move) — one-liners
+
+**macOS / Linux:**
+
+```sh
+git clone https://github.com/MrErikCodes/npm-check-updates-skill.git /tmp/ncu-skill && mkdir -p ~/.claude/skills/npm-check-updates && cp /tmp/ncu-skill/SKILL.md ~/.claude/skills/npm-check-updates/ && rm -rf /tmp/ncu-skill
+```
+
+**Windows (PowerShell):**
+
+```powershell
+git clone https://github.com/MrErikCodes/npm-check-updates-skill.git "$env:TEMP\ncu-skill"; New-Item -ItemType Directory -Force "$HOME\.claude\skills\npm-check-updates" > $null; Copy-Item "$env:TEMP\ncu-skill\SKILL.md" "$HOME\.claude\skills\npm-check-updates\"; Remove-Item -Recurse -Force "$env:TEMP\ncu-skill"
+```
+
+### Download the file only (no clone) — one-liners
+
+**macOS / Linux:**
+
+```sh
+mkdir -p ~/.claude/skills/npm-check-updates && curl -fsSL https://raw.githubusercontent.com/MrErikCodes/npm-check-updates-skill/main/SKILL.md -o ~/.claude/skills/npm-check-updates/SKILL.md
+```
+
+**Windows (PowerShell):**
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.claude\skills\npm-check-updates" > $null; Invoke-WebRequest https://raw.githubusercontent.com/MrErikCodes/npm-check-updates-skill/main/SKILL.md -OutFile "$HOME\.claude\skills\npm-check-updates\SKILL.md"
+```
+
+Once installed, the agent auto-discovers the skill from its `description` frontmatter and loads it
+when you ask to update / upgrade / bump dependencies or mention `npm-check-updates` / `ncu`.
 
 ## The tool itself
 
