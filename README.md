@@ -38,32 +38,60 @@ npx skills list                       # show installed skills
 npx skills remove npm-check-updates   # uninstall
 ```
 
-### From git (clone & move) — one-liners
+### Manual install — pick your agent's skills directory
+
+`npx skills` auto-detects your agent. For a manual install, drop `SKILL.md` into the agent's
+global skills folder. Each command below sets `DEST` once — **uncomment the line for your agent**,
+then run the block as-is.
+
+| Agent | Global skills directory |
+|-------|-------------------------|
+| Claude Code | `~/.claude/skills/` |
+| Codex | `~/.codex/skills/` (or `~/.agents/skills/`) |
+| Copilot CLI | `~/.copilot/skills/` (or `~/.agents/skills/`) |
+| Gemini CLI | `~/.gemini/skills/` (or `~/.agents/skills/`) |
+
+> `~/.agents/skills/` is a shared path that Codex, Copilot CLI, and Gemini CLI all read — install
+> there once to cover all three. Claude Code does **not** read it, so use `~/.claude/skills/` for Claude.
+
+#### From git (clone & move) — one-liner
 
 **macOS / Linux:**
 
 ```sh
-git clone https://github.com/MrErikCodes/npm-check-updates-skill.git /tmp/ncu-skill && mkdir -p ~/.claude/skills/npm-check-updates && cp /tmp/ncu-skill/SKILL.md ~/.claude/skills/npm-check-updates/ && rm -rf /tmp/ncu-skill
+DEST=~/.claude/skills/npm-check-updates       # Claude Code
+# DEST=~/.codex/skills/npm-check-updates       # Codex
+# DEST=~/.copilot/skills/npm-check-updates     # Copilot CLI
+# DEST=~/.gemini/skills/npm-check-updates      # Gemini CLI
+# DEST=~/.agents/skills/npm-check-updates      # Codex + Copilot + Gemini (shared)
+git clone https://github.com/MrErikCodes/npm-check-updates-skill.git /tmp/ncu-skill && mkdir -p "$DEST" && cp /tmp/ncu-skill/SKILL.md "$DEST/" && rm -rf /tmp/ncu-skill
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-git clone https://github.com/MrErikCodes/npm-check-updates-skill.git "$env:TEMP\ncu-skill"; New-Item -ItemType Directory -Force "$HOME\.claude\skills\npm-check-updates" > $null; Copy-Item "$env:TEMP\ncu-skill\SKILL.md" "$HOME\.claude\skills\npm-check-updates\"; Remove-Item -Recurse -Force "$env:TEMP\ncu-skill"
+$Dest = "$HOME\.claude\skills\npm-check-updates"      # Claude Code
+# $Dest = "$HOME\.codex\skills\npm-check-updates"     # Codex
+# $Dest = "$HOME\.copilot\skills\npm-check-updates"   # Copilot CLI
+# $Dest = "$HOME\.gemini\skills\npm-check-updates"    # Gemini CLI
+# $Dest = "$HOME\.agents\skills\npm-check-updates"    # Codex + Copilot + Gemini (shared)
+git clone https://github.com/MrErikCodes/npm-check-updates-skill.git "$env:TEMP\ncu-skill"; New-Item -ItemType Directory -Force $Dest > $null; Copy-Item "$env:TEMP\ncu-skill\SKILL.md" $Dest; Remove-Item -Recurse -Force "$env:TEMP\ncu-skill"
 ```
 
-### Download the file only (no clone) — one-liners
+#### Download the file only (no clone) — one-liner
 
 **macOS / Linux:**
 
 ```sh
-mkdir -p ~/.claude/skills/npm-check-updates && curl -fsSL https://raw.githubusercontent.com/MrErikCodes/npm-check-updates-skill/main/SKILL.md -o ~/.claude/skills/npm-check-updates/SKILL.md
+DEST=~/.claude/skills/npm-check-updates       # Claude Code (or ~/.codex, ~/.copilot, ~/.gemini, ~/.agents)
+mkdir -p "$DEST" && curl -fsSL https://raw.githubusercontent.com/MrErikCodes/npm-check-updates-skill/main/SKILL.md -o "$DEST/SKILL.md"
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-New-Item -ItemType Directory -Force "$HOME\.claude\skills\npm-check-updates" > $null; Invoke-WebRequest https://raw.githubusercontent.com/MrErikCodes/npm-check-updates-skill/main/SKILL.md -OutFile "$HOME\.claude\skills\npm-check-updates\SKILL.md"
+$Dest = "$HOME\.claude\skills\npm-check-updates"      # Claude Code (or .codex, .copilot, .gemini, .agents)
+New-Item -ItemType Directory -Force $Dest > $null; Invoke-WebRequest https://raw.githubusercontent.com/MrErikCodes/npm-check-updates-skill/main/SKILL.md -OutFile "$Dest\SKILL.md"
 ```
 
 Once installed, the agent auto-discovers the skill from its `description` frontmatter and loads it
